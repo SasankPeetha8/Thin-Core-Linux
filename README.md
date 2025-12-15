@@ -15,3 +15,4 @@ This distro is specifically optimised for lightweight performance, custom kernel
 10. NVIDIA Graphics Driver
 
 Thin Core Linux project provides me a sleek, efficient, and developer-friendly environment with carefully chosen tools for productivity, coding, and daily use.
+This branch tracks the changes made to Linux LTS 6.12 Kernel. The main branch is used for developing Rocky Linux 10 Kernel
