@@ -1,0 +1,63 @@
+name: build-kernel-rpms
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: rockylinux:10
+
+    steps:
+      - name: Install tooling
+        run: |
+          dnf -y update
+          dnf -y install dnf-plugins-core rpm-build rpmdevtools git tar xz gzip bzip2 findutils which
+
+      - name: Enable CRB (needed for some BuildRequires)
+        run: |
+          dnf -y install 'dnf-command(config-manager)'
+          dnf config-manager --set-enabled crb || true
+
+      - name: Download Rocky kernel SRPM
+        run: |
+          dnf -y install 'dnf-command(download)'
+          dnf download --source kernel
+
+      - name: Install SRPM into rpmbuild tree
+        run: |
+          rpm -ivh kernel-*.src.rpm
+          ls -lah ~/rpmbuild/SPECS
+          ls -lah ~/rpmbuild/SOURCES | head
+
+      - name: Install build dependencies
+        run: |
+          dnf -y builddep ~/rpmbuild/SPECS/kernel.spec
+
+      - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
+        run: |
+          rpmbuild -bb \
+            --define "_without_debug 1" \
+            --define "_without_realtime 1" \
+            --define "_without_debuginfo 1" \
+            --define "_without_selftests 1" \
+            --define "_without_perf 1" \
+            --define "_without_libperf 1" \
+            --define "_without_efiuki 1" \
+            --define "_without_tools 1" \
+            --define "_without_kabichk 1" \
+            --define "_without_kabidupchk 1" \
+            --define "_without_kabidwchk 1" \
+            --define "_without_kabidw_base 1" \
+            ~/rpmbuild/SPECS/kernel.spec
+
+      - name: List built RPMs
+        run: |
+          ls -lh ~/rpmbuild/RPMS/x86_64 | sed -n '1,200p'
+
+      - name: Upload RPM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-rpms
+          path: ~/rpmbuild/RPMS/x86_64/*.rpm
