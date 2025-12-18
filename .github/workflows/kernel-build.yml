@@ -38,7 +38,7 @@ jobs:
       - name: Using Custom Kernel Config
         run: |
           echo $(pwd)
-          ls -lsa
+          ls -lsa ../
           cp Kernel/configs/thin_core_kernel.cfg .
 
       - name: Adding Custom Config Patch to Kernel
