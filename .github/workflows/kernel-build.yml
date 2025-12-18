@@ -35,6 +35,16 @@ jobs:
         run: |
           dnf -y builddep ~/rpmbuild/SPECS/kernel.spec
 
+      - name: Using Custom Kernel Config
+        run: |
+          cp Kernel/configs/thin_core_kernel.cfg .
+
+      - name: Adding Custom Config Patch to Kernel
+        run: |
+          scripts/kconfig/merge_config.sh -m .config thin_core_kernel.cfg
+          make olddefconfig
+
+
       # - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
       #   run: |
       #     rpmbuild -bb \
