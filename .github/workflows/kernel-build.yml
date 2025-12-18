@@ -35,6 +35,23 @@ jobs:
         run: |
           dnf -y builddep ~/rpmbuild/SPECS/kernel.spec
 
+      # - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
+      #   run: |
+      #     rpmbuild -bb \
+      #       --define "_without_debug 1" \
+      #       --define "_without_realtime 1" \
+      #       --define "_without_debuginfo 1" \
+      #       --define "_without_selftests 1" \
+      #       --define "_without_perf 1" \
+      #       --define "_without_libperf 1" \
+      #       --define "_without_efiuki 1" \
+      #       --define "_without_tools 1" \
+      #       --define "_without_kabichk 1" \
+      #       --define "_without_kabidupchk 1" \
+      #       --define "_without_kabidwchk 1" \
+      #       --define "_without_kabidw_base 1" \
+      #       ~/rpmbuild/SPECS/kernel.spec
+
       - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
         run: |
           rpmbuild -bb \
@@ -46,10 +63,6 @@ jobs:
             --define "_without_libperf 1" \
             --define "_without_efiuki 1" \
             --define "_without_tools 1" \
-            --define "_without_kabichk 1" \
-            --define "_without_kabidupchk 1" \
-            --define "_without_kabidwchk 1" \
-            --define "_without_kabidw_base 1" \
             ~/rpmbuild/SPECS/kernel.spec
 
       - name: List built RPMs
