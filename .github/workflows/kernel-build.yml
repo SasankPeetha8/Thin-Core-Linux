@@ -37,7 +37,9 @@ jobs:
 
       - name: Using Custom Kernel Config
         run: |
-          echo $(pwd)
+          pwd
+          ls -lah kernel-config
+          ls -lah kernel-config/fragments/
           ls -la
           cd ..
           ls -la
