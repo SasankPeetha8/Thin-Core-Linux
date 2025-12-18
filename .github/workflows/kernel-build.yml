@@ -41,7 +41,7 @@ jobs:
 
       - name: Using Custom Kernel Config
         run: |
-          python ~/rpmbuild/SOURCES/merge.py ~/rpmbuild/SOURCES/kernel-x86_64-rhel.config ./thin-core-linux/Kernel/configs/thin_core_kernel.cfg > new_config.config
+          python3 ~/rpmbuild/SOURCES/merge.py ~/rpmbuild/SOURCES/kernel-x86_64-rhel.config ./thin-core-linux/Kernel/configs/thin_core_kernel.cfg > new_config.config
           rm -f kernel-x86_64-rhel.config
           mv new_config.config kernel-x86_64-rhel.config
 
