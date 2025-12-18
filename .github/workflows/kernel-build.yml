@@ -35,47 +35,15 @@ jobs:
         run: |
           dnf -y builddep ~/rpmbuild/SPECS/kernel.spec
 
+      - name: Cloning Repository
+        run: |
+          git clone https://github.com/SasankPeetha8/Thin-Core-Linux thin-core-linux
+
       - name: Using Custom Kernel Config
         run: |
-          pwd
-          ls -lah kernel-config
-          ls -lah kernel-config/fragments/
-          ls -la
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-          cd ..
-          ls -la
-
-          cp Kernel/configs/thin_core_kernel.cfg .
-
-      - name: Adding Custom Config Patch to Kernel
-        run: |
-          scripts/kconfig/merge_config.sh -m .config thin_core_kernel.cfg
-          make olddefconfig
-
-
-      # - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
-      #   run: |
-      #     rpmbuild -bb \
-      #       --define "_without_debug 1" \
-      #       --define "_without_realtime 1" \
-      #       --define "_without_debuginfo 1" \
-      #       --define "_without_selftests 1" \
-      #       --define "_without_perf 1" \
-      #       --define "_without_libperf 1" \
-      #       --define "_without_efiuki 1" \
-      #       --define "_without_tools 1" \
-      #       --define "_without_kabichk 1" \
-      #       --define "_without_kabidupchk 1" \
-      #       --define "_without_kabidwchk 1" \
-      #       --define "_without_kabidw_base 1" \
-      #       ~/rpmbuild/SPECS/kernel.spec
+          python ~/rpmbuild/SOURCES/merge.py ~/rpmbuild/SOURCES/kernel-x86_64-rhel.config ./thin-core-linux/Kernel/configs/thin_core_kernel.cfg > new_config.config
+          rm -f kernel-x86_64-rhel.config
+          mv new_config.config kernel-x86_64-rhel.config
 
       - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
         run: |
@@ -88,7 +56,24 @@ jobs:
             --define "_without_libperf 1" \
             --define "_without_efiuki 1" \
             --define "_without_tools 1" \
+            --define "_without_kabichk 1" \
+            --define "_without_kabidupchk 1" \
+            --define "_without_kabidwchk 1" \
+            --define "_without_kabidw_base 1" \
             ~/rpmbuild/SPECS/kernel.spec
+
+      # - name: Build lean kernel (no debug/rt/tools/perf/debuginfo)
+      #   run: |
+      #     rpmbuild -bb \
+      #       --define "_without_debug 1" \
+      #       --define "_without_realtime 1" \
+      #       --define "_without_debuginfo 1" \
+      #       --define "_without_selftests 1" \
+      #       --define "_without_perf 1" \
+      #       --define "_without_libperf 1" \
+      #       --define "_without_efiuki 1" \
+      #       --define "_without_tools 1" \
+      #       ~/rpmbuild/SPECS/kernel.spec
 
       - name: List built RPMs
         run: |
